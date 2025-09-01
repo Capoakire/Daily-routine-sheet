@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Daily Routine Worksheet</title>
+    <!-- jQuery and jQuery UI for drag-and-drop -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 20px auto;
+            text-align: left;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .instructions {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .questions {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin: 20px 0;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .droppable {
+            display: inline-block;
+            width: 150px;
+            height: 30px;
+            border: 2px dashed #666;
+            margin: 0 5px;
+            vertical-align: middle;
+            background-color: #e0f7fa;
+            text-align: center;
+        }
+        .draggable {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 5px;
+            cursor: move;
+        }
+        .word-bank {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .image-container img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        #check-answers {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #check-answers:hover {
+            background-color: #0056b3;
+        }
+        #reset-answers {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #reset-answers:hover {
+            background-color: #cc0000;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-size: 1.1em;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Daily Routine Worksheet</h1>
+    <div class="instructions">
+        Look at the pictures. Drag and drop the correct words or times from the word bank to complete the sentences.
+    </div>
+
+    <!-- Image Container -->
+    <div class="image-container">
+        <img src="https://via.placeholder.com/80?text=Get+Up" alt="Get Up">
+        <img src="https://via.placeholder.com/80?text=Brush+Teeth" alt="Brush Teeth">
+        <img src="https://via.placeholder.com/80?text=Eat+Breakfast" alt="Eat Breakfast">
+        <img src="https://via.placeholder.com/80?text=School+Bus" alt="School Bus">
+        <img src="https://via.placeholder.com/80?text=School" alt="School">
+        <img src="https://via.placeholder.com/80?text=Lunch" alt="Lunch">
+        <img src="https://via.placeholder.com/80?text=Play+Soccer" alt="Play Soccer">
+        <img src="https://via.placeholder.com/80?text=Home" alt="Home">
+        <img src="https://via.placeholder.com/80?text=Read+Book" alt="Read Book">
+        <img src="https://via.placeholder.com/80?text=Bed" alt="Bed">
+    </div>
+
+    <!-- Questions with Droppable Areas -->
+    <div class="questions">
+        1. I usually get up at <span class="droppable" data-correct="7:00 AM"></span> in the morning.<br>
+        2. The first thing I do is <span class="droppable" data-correct="brush my teeth"></span>.<br>
+        3. I have breakfast at <span class="droppable" data-correct="7:30 AM"></span>.<br>
+        4. I get to school by <span class="droppable" data-correct="school bus"></span>.<br>
+        5. School starts at <span class="droppable" data-correct="8:00 AM"></span>.<br>
+        6. I usually have lunch at <span class="droppable" data-correct="12:00 PM"></span> in <span class="droppable" data-correct="the cafeteria"></span>.<br>
+        7. After school, I <span class="droppable" data-correct="play soccer"></span>.<br>
+        8. I get home around <span class="droppable" data-correct="3:30 PM"></span>.<br>
+        9. In the evening, I usually <span class="droppable" data-correct="read a book"></span>.<br>
+        10. I usually go to bed at <span class="droppable" data-correct="9:00 PM"></span>.
+    </div>
+
+    <!-- Word Bank with Additional Activities -->
+    <div class="word-bank">
+        <h3>Word Bank</h3>
+        <!-- Correct Answers -->
+        <div class="draggable">7:00 AM</div>
+        <div class="draggable">brush my teeth</div>
+        <div class="draggable">7:30 AM</div>
+        <div class="draggable">school bus</div>
+        <div class="draggable">8:00 AM</div>
+        <div class="draggable">12:00 PM</div>
+        <div class="draggable">the cafeteria</div>
+        <div class="draggable">play soccer</div>
+        <div class="draggable">3:30 PM</div>
+        <div class="draggable">read a book</div>
+        <div class="draggable">9:00 PM</div>
+        <!-- Additional Free Time Activities and Distractors -->
+        <div class="draggable">play video games</div>
+        <div class="draggable">draw pictures</div>
+        <div class="draggable">watch TV</div>
+        <div class="draggable">do homework</div>
+        <div class="draggable">eat dinner</div>
+        <div class="draggable">ride a bike</div>
+        <div class="draggable">6:00 AM</div>
+        <div class="draggable">1:00 PM</div>
+        <div class="draggable">6:30 PM</div>
+        <div class="draggable">10:00 PM</div>
+        <div class="draggable">walk to school</div>
+        <div class="draggable">the kitchen</div>
+    </div>
+
+    <!-- Buttons -->
+    <button id="check-answers">Check Answers</button>
+    <button id="reset-answers">Reset Answers</button>
+    <div id="feedback"></div>
+
+    <script>
+        $(function() {
+            // Make elements draggable
+            $(".draggable").draggable({
+                revert: "invalid",
+                helper: "clone"
+            });
+
+            // Make elements droppable
+            $(".droppable").droppable({
+                accept: ".draggable",
+                drop: function(event, ui) {
+                    $(this).text(ui.draggable.text()).addClass("filled");
+                    ui.draggable.hide();
+                }
+            });
+
+            // Check answers
+            $("#check-answers").click(function() {
+                let correct = true;
+                $(".droppable").each(function() {
+                    let droppedText = $(this).text();
+                    let correctText = $(this).data("correct");
+                    if (droppedText !== correctText) {
+                        correct = false;
+                        $(this).css("border-color", "red");
+                    } else {
+                        $(this).css("border-color", "green");
+                    }
+                });
+                $("#feedback").text(correct ? "All answers are correct!" : "Some answers are incorrect. Try again!");
+            });
+
+            // Reset answers
+            $("#reset-answers").click(function() {
+                $(".droppable").text("").css("border-color", "#666").removeClass("filled");
+                $(".draggable").show();
+                $("#feedback").text("");
+            });
+        });
+    </script>
+</body>
+</html>
