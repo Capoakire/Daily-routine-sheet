@@ -8,6 +8,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <!-- jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,7 +76,7 @@
             object-fit: cover;
             border-radius: 5px;
         }
-        #check-answers {
+        #check-answers, #download-presentation {
             display: block;
             margin: 20px auto;
             padding: 10px 20px;
@@ -85,7 +87,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #check-answers:hover {
+        #check-answers:hover, #download-presentation:hover {
             background-color: #0056b3;
         }
         #reset-answers {
@@ -108,6 +110,9 @@
             text-align: center;
             color: #333;
         }
+        #download-presentation {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -121,7 +126,7 @@
         <img src="https://via.placeholder.com/80?text=Get+Up" alt="Get Up">
         <img src="https://via.placeholder.com/80?text=Brush+Teeth" alt="Brush Teeth">
         <img src="https://via.placeholder.com/80?text=Eat+Breakfast" alt="Eat Breakfast">
-        <img src="https://via.placeholder.com/80?text=By+Bus" alt="By Bus">
+        <img src="https://via.placeholder.com/80?text=Bus" alt="Bus">
         <img src="https://via.placeholder.com/80?text=School" alt="School">
         <img src="https://via.placeholder.com/80?text=Lunch" alt="Lunch">
         <img src="https://via.placeholder.com/80?text=Play+Soccer" alt="Play Soccer">
@@ -135,7 +140,7 @@
         1. I usually get up at <span class="droppable" data-correct="6:15 AM"></span> in the morning.<br>
         2. The first thing I do is <span class="droppable" data-correct="brush my teeth"></span>.<br>
         3. I have breakfast at <span class="droppable" data-correct="7:15 AM"></span>.<br>
-        4. I get to school by <span class="droppable" data-correct="by bus"></span>.<br>
+        4. I get to school by <span class="droppable" data-correct="bus"></span>.<br>
         5. School starts at <span class="droppable" data-correct="8:00 AM"></span>.<br>
         6. I usually have lunch at <span class="droppable" data-correct="12:45 PM"></span> in <span class="droppable" data-correct="the cafeteria"></span>.<br>
         7. After school, I <span class="droppable" data-correct="play soccer"></span>.<br>
@@ -151,7 +156,7 @@
         <div class="draggable">6:15 AM</div>
         <div class="draggable">brush my teeth</div>
         <div class="draggable">7:15 AM</div>
-        <div class="draggable">by bus</div>
+        <div class="draggable">bus</div>
         <div class="draggable">8:00 AM</div>
         <div class="draggable">12:45 PM</div>
         <div class="draggable">the cafeteria</div>
@@ -160,14 +165,14 @@
         <div class="draggable">read a book</div>
         <div class="draggable">9:15 PM</div>
         <!-- Additional Free Time Activities and Distractors -->
-        <div class="draggable">by bike</div>
+        <div class="draggable">bike</div>
         <div class="draggable">walking</div>
         <div class="draggable">play video games</div>
         <div class="draggable">draw pictures</div>
         <div class="draggable">watch TV</div>
         <div class="draggable">do homework</div>
         <div class="draggable">eat dinner</div>
-        <div class="draggable">ride a bike</div>
+        <div class="draggable">riding a bike</div>
         <div class="draggable">6:00 AM</div>
         <div class="draggable">7:45 AM</div>
         <div class="draggable">1:00 PM</div>
@@ -179,6 +184,7 @@
     <!-- Buttons -->
     <button id="check-answers">Check Answers</button>
     <button id="reset-answers">Reset Answers</button>
+    <button id="download-presentation">Download Presentation</button>
     <div id="feedback"></div>
 
     <script>
@@ -201,9 +207,11 @@
             // Check answers
             $("#check-answers").click(function() {
                 let correct = true;
-                $(".droppable").each(function() {
+                const answers = [];
+                $(".droppable").each(function(index) {
                     let droppedText = $(this).text();
                     let correctText = $(this).data("correct");
+                    answers.push(droppedText);
                     if (droppedText !== correctText) {
                         correct = false;
                         $(this).css("border-color", "red");
@@ -211,7 +219,13 @@
                         $(this).css("border-color", "green");
                     }
                 });
-                $("#feedback").text(correct ? "All answers are correct!" : "Some answers are incorrect. Try again!");
+                if (correct) {
+                    $("#feedback").text("All answers are correct! You can download your presentation.");
+                    $("#download-presentation").show();
+                } else {
+                    $("#feedback").text("Some answers are incorrect. Try again!");
+                    $("#download-presentation").hide();
+                }
             });
 
             // Reset answers
@@ -219,6 +233,32 @@
                 $(".droppable").text("").css("border-color", "#666").removeClass("filled");
                 $(".draggable").show();
                 $("#feedback").text("");
+                $("#download-presentation").hide();
+            });
+
+            // Download presentation as PDF
+            $("#download-presentation").click(function() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(16);
+                doc.text("My Daily Routine", 105, 20, { align: "center" });
+                doc.setFontSize(12);
+                const questions = [
+                    `1. I usually get up at ${$(".droppable").eq(0).text()} in the morning.`,
+                    `2. The first thing I do is ${$(".droppable").eq(1).text()}.`,
+                    `3. I have breakfast at ${$(".droppable").eq(2).text()}.`,
+                    `4. I get to school by ${$(".droppable").eq(3).text()}.`,
+                    `5. School starts at ${$(".droppable").eq(4).text()}.`,
+                    `6. I usually have lunch at ${$(".droppable").eq(5).text()} in ${$(".droppable").eq(6).text()}.`,
+                    `7. After school, I ${$(".droppable").eq(7).text()}.`,
+                    `8. I get home around ${$(".droppable").eq(8).text()}.`,
+                    `9. In the evening, I usually ${$(".droppable").eq(9).text()}.`,
+                    `10. I usually go to bed at ${$(".droppable").eq(10).text()}.`
+                ];
+                questions.forEach((question, index) => {
+                    doc.text(question, 20, 40 + index * 10);
+                });
+                doc.save("My_Daily_Routine.pdf");
             });
         });
     </script>
